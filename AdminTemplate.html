@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* Configuração de fundo e centralização para Desktop */
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      background: #f4f6f9; 
+      padding: 20px; 
+    }
+    
+    /* Estilo padrão da caixa de login (Computadores e Tablets) */
+    .box { 
+      background: white; 
+      padding: 40px 24px; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08); 
+      width: 100%; 
+      max-width: 400px; 
+      text-align: center; 
+      box-sizing: border-box; 
+    }
+    
+    h2 { font-size: 1.6rem; font-weight: 700; color: #111; margin-bottom: 8px; letter-spacing: 0.5px; }
+    p { font-size: 0.95rem; color: #666; margin-bottom: 28px; }
+    form { width: 100%; }
+    input { width: 100%; padding: 16px; margin-bottom: 20px; border: 1px solid #ccd1d9; border-radius: 12px; box-sizing: border-box; font-size: 1rem; background-color: #fafbfc; transition: all 0.2s ease; -webkit-appearance: none; }
+    input:focus { border-color: #000; background-color: #fff; outline: none; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+    button { width: 100%; padding: 16px; background: #000; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: all 0.2s ease; -webkit-appearance: none; }
+    button:hover { background: #222; }
+    button:active { transform: scale(0.98); }
+    .alert-error { display: block; margin-top: 20px; padding: 14px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 12px; font-weight: 600; font-size: 0.95rem; line-height: 1.4; text-align: left; }
+    
+    /* 🚨 ULTRA RESPONSIVIDADE: Ocupa 100% da tela e cola nos limites laterais no celular */
+    @media (max-width: 600px) {
+      body { 
+        padding: 0 !important; 
+        background: white; /* Remove o fundo cinza externo no celular */
+      }
+      .box { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        border-radius: 0 !important; /* Remove os cantos arredondados externos */
+        box-shadow: none !important; /* Remove a sombra */
+        padding: 40px 16px !important; /* Ajusta o espaçamento interno nas bordas */
+        min-height: 100vh; /* Garante que preencha o fundo verticalmente caso necessário */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      h2 { font-size: 1.4rem; }
+      input, button { padding: 14px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>ENTRAR</h2>
+    <p>Insira a senha do painel:</p>
+    
+    <form id="loginForm" action="<?= urlApp ?>?action=login" method="POST">
+      <input type="password" name="senha" id="inputSenha" placeholder="Sua Senha" required>
+      <button type="submit" id="btnEntrar">Entrar no Painel</button>
+    </form>
+    
+    <? if (typeof erroLogin !== 'undefined' && erroLogin === true) { ?>
+      <div id="alertaErro" class="alert-error">⚠️ Senha incorreta! Tente novamente.</div>
+    <? } ?>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+      var btn = document.getElementById('btnEntrar');
+      btn.disabled = true;
+      btn.innerText = "Verificando...";
+    });
+  </script>
+</body>
+</html>
