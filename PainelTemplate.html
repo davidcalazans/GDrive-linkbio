@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* Configuração de fundo e centralização para Desktop */
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      padding: 20px 12px; 
+      background: #f4f6f9; 
+      color: #333; 
+      display: flex; 
+      justify-content: center; 
+      align-items: flex-start; 
+      min-height: 100vh; 
+    }
+    
+    /* Estilo padrão do painel (Computadores e Tablets) */
+    .panel { 
+      width: 100%; 
+      max-width: 560px; 
+      background: white; 
+      padding: 32px 24px; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08); 
+      position: relative; 
+      box-sizing: border-box; 
+    }
+    
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px; border-bottom: 1px solid #f0f2f5; padding-bottom: 16px; }
+    h2 { font-size: 1.4rem; font-weight: 700; color: #111; text-align: left; line-height: 1.2; }
+    .btn {
+      background-color: var(--primary); color: white; border: none;
+      padding: 10px 20px; border-radius: 4px; font-weight: 500;
+      cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14); transition: 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;}
+    .btn:hover { box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14); }
+    .btn-logout { padding: 8px 16px; background: #dc3545; color: white; font-size: 0.9rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; -webkit-appearance: none; }
+    .btn-logout:hover { background: #bd2130; }
+    
+    label { font-weight: 600; display: block; margin-top: 20px; font-size: 0.95rem; color: #444; }
+    input, textarea { width: 100%; padding: 14px 16px; margin-top: 6px; border: 1px solid #ccd1d9; border-radius: 10px; box-sizing: border-box; font-size: 1rem; color: #222; background-color: #fafbfc; transition: all 0.2s ease; -webkit-appearance: none; }
+    input:focus, textarea:focus { border-color: #1a73e8; background-color: #fff; outline: none; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+    span { display: block; font-size: 0.8rem; color: #656d78; margin-top: 6px; line-height: 1.4; }
+    
+    .btn-submit { margin-top: 36px; width: 100%; padding: 16px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15); transition: all 0.2s; -webkit-appearance: none; }
+    .btn-submit:hover { background: #218838; }
+    .btn-submit:active { transform: scale(0.99); }
+    
+    .alert-success { display: none; margin-top: 20px; padding: 14px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 10px; text-align: center; font-weight: 600; font-size: 0.95rem; animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* 🚨 ULTRA RESPONSIVIDADE: Força o preenchimento total em telas de celular */
+    @media (max-width: 600px) {
+      body { 
+        padding: 0 !important; 
+        background: white; /* Remove o fundo cinza externo no celular */
+      }
+      .panel { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        border-radius: 0 !important; /* Remove as bordas arredondadas externas */
+        box-shadow: none !important; /* Remove sombras desnecessárias */
+        padding: 20px 14px !important; /* Espaçamento interno ideal para o conteúdo */
+      }
+      h2 { font-size: 1.25rem; }
+      input, textarea { padding: 12px; font-size: 0.95rem; }
+      .btn-submit { padding: 14px; font-size: 1rem; margin-top: 28px; border-radius: 8px; }
+    }
+
+    /* BOTÃO E MODAL DE DOAÇÃO */
+    .donate-btn {
+      background-color: #d93025;
+      color: white;
+      border: none;
+      padding: 5px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .donate-btn:hover {
+      background-color: #b3261e;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .social-link {
+      display: inline-block;
+      margin: 4px 0;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .social-link:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <div class="panel">
+    <!-- BOTÃO DE DOAÇÃO -->
+    <button class="donate-btn" onclick="openDonateModal()">
+        <i class="material-icons" style="font-size: 18px;">favorite</i>
+        Apoie este projeto
+    </button>
+    <div class="panel-header">
+      <h2>Painel de Configuração</h2>
+      <form action="<?= ScriptApp.getService().getUrl() ?>?action=logout" method="POST">
+        <button type="submit" class="btn-logout">Sair</button>
+      </form>
+    </div>
+    
+    <div>
+      <h4><a href="https://www.youtube.com/watch?v=8K7qMFkEWAA" target="_blank">TUTORIAL: Como preencher o painel de controle. CLIQUE AQUI!</a></h4>
+    </div>
+
+    <form id="painelForm">
+      <input type="hidden" name="tokenSessao" value="<?= tokenSessao ?>">
+      
+      <label>Nome de Exibição:</label>
+      <input type="text" name="nome" value="<?= nome ?>" required>
+      
+      <label>Descrição de Texto Livre / Biografia:</label>
+      <textarea name="descricao" rows="2" placeholder="Escreva uma frase curta sobre você..."><?= descricao ?></textarea>
+      
+      <label>Facebook:</label>
+      <input type="url" id="facebookUrl" name="facebookUrl" value="<?= facebookUrl ?>" placeholder="https://facebook.com/seuusuario">
+
+      <label>Instagram:</label>
+      <input type="url" id="instagramUrl" name="instagramUrl" value="<?= instagramUrl ?>" placeholder="https://instagram.com/seuusuario">
+
+      <label>Tiktok:</label>
+      <input type="url" id="tiktokUrl" name="tiktokUrl" value="<?= tiktokUrl ?>" placeholder="https://tiktok.com/seuusuario">
+
+      <label>YouTube:</label>
+      <input type="url" id="youtubeUrl" name="youtubeUrl" value="<?= youtubeUrl ?>" placeholder="https://youtube.com/seuusuario">
+
+      <label>Spotify:</label>
+      <input type="url" id="spotifyUrl" name="spotifyUrl" value="<?= spotifyUrl ?>" placeholder="https://spotify.com/seuusuario">
+
+      <label>X/Twitter:</label>
+      <input type="url" id="xtwitterUrl" name="xtwitterUrl" value="<?= xtwitterUrl ?>" placeholder="https://x.com/seuusuario">
+
+      <label>Pinterest:</label>
+      <input type="url" id="pinterestUrl" name="pinterestUrl" value="<?= pinterestUrl ?>" placeholder="https://pinterest.com/seuusuario">
+
+      <label>LinkedIn:</label>
+      <input type="url" id="linkedinUrl" name="linkedinUrl" value="<?= linkedinUrl ?>" placeholder="https://linkedin.com/seuusuario">
+
+      <label>GitHub:</label>
+      <input type="url" id="githubUrl" name="githubUrl" value="<?= githubUrl ?>" placeholder="https://github.com/seuusuario">
+
+      <label>Telegram:</label>
+      <input type="url" id="telegramUrl" name="telegramUrl" value="<?= telegramUrl ?>" placeholder="https://t.me/seuusuario">
+
+      <label>WhatsApp:</label>
+      <input type="url" id="whatsappUrl" name="whatsappUrl" value="<?= whatsappUrl ?>" placeholder="https://wa.me/55[DDD][SEU-NÚMERO]">
+
+      <label>Código de Incorporação do Vídeo (Iframe do YouTube):</label>
+      <input type="text" name="video" value="<?= video ?>" placeholder="Cole aqui o bloco <iframe> do YouTube">
+      <span>Entre na opção 'Compartilhar' > 'Incorporar' no YouTube e cole o código aqui.</span>
+      
+      <label>URL / ID da Foto de Perfil:</label>
+      <input type="text" name="foto" value="<?= foto ?>" required>
+      
+      <label>Background (Cor Hex ou URL da Imagem):</label>
+      <input type="text" name="fundo" value="<?= fundo ?>" required>
+      <span>Exemplo de cor: #121212 ou link da imagem.</span>
+      
+      <label>Gerenciar Links (Formato: Nome,URL separado por pipe |):</label>
+      <textarea name="links" rows="4" ><?= links ?></textarea>
+      
+      <label>Mudar Senha do Painel (Opcional):</label>
+      <div style="position: relative;">
+        <input type="password" id="inputNovaSenha" name="novasenha" placeholder="Deixe em branco para manter a atual" style="padding-right: 75px; margin-top: 6px;">
+        <span id="contadorSenha" style="position: absolute; right: 12px; top: 55%; transform: translateY(-30%); font-weight: bold; color: #656d78; background: transparent; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">0 / 20</span>
+      </div>
+      <span>Use o conceito de frase-senha. Mínimo 20 caracteres.</span>
+      
+      <button type="submit" id="btnSalvar" class="btn-submit">Salvar Alterações</button>
+    </form>
+    <div id="alertaSucesso" class="alert-success">Alterações salvas com sucesso! ✓</div>
+  </div>
+
+  <!-- MODAL DE DOAÇÃO -->
+  <div id="donate-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background: #ffffff; padding: 32px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); text-align: center;">
+      
+      <h2 style="text-align: center; color: #d93025; margin-bottom: 16px; font-size: 28px;">DOE!</h2>
+      
+      <p style="margin-bottom: 24px; font-size: 15px; color: var(--text-main); line-height: 1.5;">
+        Este projeto é mantido gratuitamente por David Calazans no Github e sua contribuição de qualquer valor é um incentivo para melhorias futuras.
+      </p>
+      
+      <div style="background: #f1f3f4; padding: 16px; border-radius: 8px; margin-bottom: 24px; border: 1px dashed #ccc;">
+        <label style="display: block; font-size: 12px; color: var(--text-sec); margin-bottom: 4px;">Chave Pix:</label>
+        <span style="font-size: 18px; font-weight: bold; user-select: all; color: var(--text-main);">pixdc@uorak.com</span>
+      </div>
+
+      <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-main);">Me encontre aqui</h3>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; background: #f8f9fa; padding: 16px; border-radius: 8px;">
+        <a href="https://www.linkedin.com/in/davidcalazans" target="_blank" class="social-link">Linkedin</a>
+        <a href="https://github.com/davidcalazans" target="_blank" class="social-link">Github</a>
+        <a href="https://www.youtube.com/@canaldavidcalazans" target="_blank" class="social-link">Youtube</a>
+      </div>
+      
+      <button class="btn" style="padding: 10px 20px; border-radius: 4px; width: 100%; background: #e8eaed; color: var(--text-main); box-shadow: none;" onclick="closeDonateModal()">Fechar</button>
+    
+    </div>
+  </div>
+
+  <script>
+  document.getElementById('inputNovaSenha').addEventListener('input', function() {
+    var totalCaracteres = this.value.length;
+    var contador = document.getElementById('contadorSenha');
+    contador.innerText = totalCaracteres + "/20";
+    
+    // CORRIGIDO: Nome da variável corrigido para 'totalCaracteres'
+    if (totalCaracteres === 0) {
+      contador.style.color = "#656d78";
+      contador.style.backgroundColor = "transparent";
+    } else if (totalCaracteres < 20) {
+      contador.style.color = "#ffffff";
+      contador.style.backgroundColor = "#d9534f";
+    } else {
+      contador.style.color = "#ffffff";
+      contador.style.backgroundColor = "#28a745";
+    }
+  });
+
+  document.getElementById('painelForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btnSalvar');
+    var alerta = document.getElementById('alertaSucesso');
+    
+    btn.disabled = true;
+    btn.innerText = "Salvando dados...";
+    alerta.style.display = "none";
+    
+    var formData = new FormData(this);
+    var urlParams = new URLSearchParams();
+    
+    urlParams.append("action", "salvar");
+    
+    // CORRIGIDO: Chaves do loop e do fluxo de execução organizadas corretamente
+    for (var pair of formData.entries()) {
+      urlParams.append(pair[0], pair[1]);
+    }
+    
+    // Enviamos direto para a URL limpa da aplicação
+    fetch("<?= ScriptApp.getService().getUrl() ?>", {
+      method: 'POST',
+      body: urlParams,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+    .then(function(response) { return response.text(); })
+    .then(function(textoResposta) {
+      btn.disabled = false;
+      btn.innerText = "Salvar Alterações";
+      
+      if (textoResposta === "SESSAO_EXPIRADA") {
+        alert("Sua sessão expirou por inatividade (limite de 30 minutos). Faça login novamente.");
+        window.location.reload();
+      } else if (textoResposta === "ERRO_SENHA_CURTA") {
+        alert("Erro: A nova frase-senha precisa ter no mínimo 20 caracteres!");
+      } else if (textoResposta === "OK") {
+        alerta.style.display = "block";
+        setTimeout(function() { alerta.style.display = "none"; }, 4000);
+      } else {
+        alert("Erro de autenticação de sessão. Recarregue a página.");
+        window.location.reload();
+      }
+    })
+    .catch(function() {
+      alert("Erro ao conectar com o servidor.");
+      btn.disabled = false;
+      btn.innerText = "Salvar Alterações";
+    });
+  });
+
+    // -- MODAL DE DOAÇÃO ---
+    function openDonateModal() {
+      document.getElementById('donate-modal').style.display = 'flex';
+    }
+
+    function closeDonateModal() {
+      document.getElementById('donate-modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
